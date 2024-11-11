@@ -8,8 +8,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-import java.beans.EventHandler;
-
 public class Main extends Application {
 
     public static void main(String[] args) {
@@ -18,7 +16,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Mandelbrot mandelbrot = new Mandelbrot(500);
+        Mandelbrot mandelbrot = new Mandelbrot(512);
         ImageView imageView = new ImageView();
         imageView.imageProperty().bind(mandelbrot.imageProperty());
 

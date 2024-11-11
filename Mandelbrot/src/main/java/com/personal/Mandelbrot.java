@@ -105,6 +105,15 @@ public final class Mandelbrot {
         WritableImage image = new WritableImage(p.width, p.height);
         PixelWriter pixWriter = image.getPixelWriter();
 
+        Color[] palette = new Color[p.maxIterations];
+        for (int i = 0; i < p.maxIterations; i++) {
+            //palette[i] = Color.getHSBColor(0.70f  + (i / (float) p.maxIterations) % 0.50f, 1f, i / (i + 8f));
+            float hue = 0.7f + 0.5f * (float)Math.sin(2 * Math.PI * i / p.maxIterations);  // Sinusoidal hue variation
+            float saturation = 1f;
+            float brightness =  i / (i + 8f); // Points inside the set are black
+            palette[i] = Color.getHSBColor(hue, saturation, brightness);
+        }
+
         Rectangle frame = p.frame();
         double delta = frame.width() / (p.width - 1);
         for (int x = 0; x < p.width; ++x) {
@@ -119,13 +128,16 @@ public final class Mandelbrot {
                     zi = zi1;
                     i += 1;
                 }
+                int colorIndex = i % p.maxIterations;
+                int color = palette[colorIndex].getRGB();
+                pixWriter.setArgb(x, y, color);
 
-                int color = Color.HSBtoRGB(i / 256f, 1, i / (i + 8f));
+                /*
                 double q = 1d - Math.pow((double) i / p.maxIterations, 0.25);
                 int pI = (int) (q * 255.9999);
                 int g = 0XFF000000 | (pI << 16) | (pI << 8) | pI;
-
                 pixWriter.setArgb(x, y, color);
+                 */
             }
         }
         return image;
