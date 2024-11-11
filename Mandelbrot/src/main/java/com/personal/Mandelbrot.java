@@ -7,6 +7,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
+import java.awt.*;
+
+
 public final class Mandelbrot {
 
     private static final Parameters INITIAL_PARAMETERS =
@@ -44,29 +47,32 @@ public final class Mandelbrot {
     }
 
 
-    public int getMaxIterations() {
-        return maxIterationsProperty.get();
+    public IntegerProperty maxIterationsProperty() { return maxIterationsProperty; }
+    public int getMaxIterations() { return maxIterationsProperty.get(); }
+    public void setMaxIterations(int newMaxIterations) { maxIterationsProperty.set(newMaxIterations); }
+
+    public ObjectProperty<Point> frameCenterProperty() { return frameCenterProperty; }
+    public Point getFrameCenter() { return frameCenterProperty.get(); }
+    public void setFrameCenter(Point newFrameCenter) { frameCenterProperty.set(newFrameCenter); }
+
+    public DoubleProperty frameWidthProperty() { return frameWidthProperty; }
+    public double getFrameWidth() { return frameWidthProperty.get(); }
+    public void setFrameWidth(double newFrameWidth) { frameWidthProperty.set(newFrameWidth); }
+
+    public Rectangle getFrame() {
+        return Parameters.frameFor(getWidth(), getHeight(), getFrameCenter(), getFrameWidth());
     }
 
-    public Point getFrameCenter() {
-        return frameCenterProperty.get();
-    }
+    public IntegerProperty widthProperty() { return widthProperty; }
+    public int getWidth() { return widthProperty.get(); }
+    public void setWidth(int newWidth) { widthProperty.set(newWidth); }
 
-    public double getFrameWidth() {
-        return frameWidthProperty.get();
-    }
+    public IntegerProperty heightProperty() { return heightProperty; }
+    public int getHeight() { return heightProperty.get(); }
+    public void setHeight(int newHeight) { heightProperty.set(newHeight); }
 
-    public int getWidth() {
-        return widthProperty.get();
-    }
-
-    public int getHeight() {
-        return heightProperty.get();
-    }
-
-    public ReadOnlyObjectProperty<Image> imageProperty() {
-        return imageProperty;
-    }
+    public ReadOnlyObjectProperty<Image> imageProperty() { return imageProperty; }
+    public Image getImage() { return imageProperty.get(); }
 
     private Parameters getParameters() {
         return new Parameters(getMaxIterations(), getFrameCenter(), getFrameWidth(), getWidth(), getHeight());
@@ -114,11 +120,12 @@ public final class Mandelbrot {
                     i += 1;
                 }
 
+                int color = Color.HSBtoRGB(i / 256f, 1, i / (i + 8f));
                 double q = 1d - Math.pow((double) i / p.maxIterations, 0.25);
                 int pI = (int) (q * 255.9999);
-                int g = 0xFF000000 | (pI << 16) | (pI << 8) | pI;
+                int g = 0XFF000000 | (pI << 16) | (pI << 8) | pI;
 
-                pixWriter.setArgb(x, y, g);
+                pixWriter.setArgb(x, y, color);
             }
         }
         return image;
