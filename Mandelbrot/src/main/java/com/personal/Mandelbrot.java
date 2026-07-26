@@ -9,7 +9,6 @@ import javafx.scene.image.WritableImage;
 
 import java.awt.*;
 
-
 public final class Mandelbrot {
 
     private static final Parameters INITIAL_PARAMETERS =
@@ -139,27 +138,6 @@ public final class Mandelbrot {
                 pixWriter.setArgb(x, y, color);
                  */
             }
-        }
-        return image;
-    }
-
-    public Image computeMandelbrotSequence(Parameters p, Complex c) {
-        WritableImage image = new WritableImage(p.width, p.height);
-        PixelWriter pixWriter = image.getPixelWriter();
-
-        Rectangle frame = p.frame();
-        double delta = frame.width() / (p.width - 1);
-
-        Complex z = new Complex(0, 0);
-
-        int iteration = 0;
-
-        while (Math.pow(z.real(), 2) + Math.pow(z.imaginary(), 2) < 4 && iteration < getMaxIterations()) {
-            // Applies the function
-            z = z.squared().add(c);
-
-            pixWriter.setArgb((int) c.real(), (int) c.imaginary(), 0x00FF0000);
-            iteration++;
         }
         return image;
     }
