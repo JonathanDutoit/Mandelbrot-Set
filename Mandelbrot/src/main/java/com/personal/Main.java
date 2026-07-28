@@ -18,7 +18,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Mandelbrot mandelbrot = new Mandelbrot(500);
+        Mandelbrot mandelbrot = new Mandelbrot(2000);
         ImageView imageView = new ImageView();
         imageView.imageProperty().bind(mandelbrot.imageProperty());
 

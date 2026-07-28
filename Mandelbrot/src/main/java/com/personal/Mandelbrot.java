@@ -1,5 +1,7 @@
 package com.personal;
 
+import com.personal.color.ColorScheme;
+import com.personal.color.ColorSchemes;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -8,6 +10,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
 import java.awt.*;
+import javafx.scene.paint.Color;
 
 public final class Mandelbrot {
 
@@ -104,39 +107,18 @@ public final class Mandelbrot {
         WritableImage image = new WritableImage(p.width, p.height);
         PixelWriter pixWriter = image.getPixelWriter();
 
-        Color[] palette = new Color[p.maxIterations];
-        for (int i = 0; i < p.maxIterations; i++) {
-            //palette[i] = Color.getHSBColor(0.70f  + (i / (float) p.maxIterations) % 0.50f, 1f, i / (i + 8f));
-            float hue = 0.7f + 0.5f * (float)Math.sin(2 * Math.PI * i / p.maxIterations);  // Sinusoidal hue variation
-            float saturation = 1f;
-            float brightness =  i / (i + 8f); // Points inside the set are black
-            palette[i] = Color.getHSBColor(hue, saturation, brightness);
-        }
-
+        ColorScheme scheme = ColorSchemes.electricBlueGold();
         Rectangle frame = p.frame();
         double delta = frame.width() / (p.width - 1);
+
+        MandelbrotFractal fractal = new MandelbrotFractal();
+
         for (int x = 0; x < p.width; ++x) {
             for (int y = 0; y < p.height; ++y) {
-                double cR = frame.minX() + delta * x, cI = frame.maxY() - delta * y;
-                double zr = cR, zi = cI;
-                int i = 1;
-                while (zr * zr + zi * zi < 4d && i < p.maxIterations) {
-                    double zr1 = zr * zr - zi * zi + cR;
-                    double zi1 = 2d * zr * zi + cI;
-                    zr = zr1;
-                    zi = zi1;
-                    i += 1;
-                }
-                int colorIndex = i % p.maxIterations;
-                int color = palette[colorIndex].getRGB();
-                pixWriter.setArgb(x, y, color);
-
-                /*
-                double q = 1d - Math.pow((double) i / p.maxIterations, 0.25);
-                int pI = (int) (q * 255.9999);
-                int g = 0XFF000000 | (pI << 16) | (pI << 8) | pI;
-                pixWriter.setArgb(x, y, color);
-                 */
+                Complex c = new Complex(frame.minX() + delta * x, frame.maxY() - delta * y);
+                int dwell = fractal.dwell(c, p.maxIterations);
+                Color color = scheme.colorFor(dwell);
+                pixWriter.setColor(x, y, color);
             }
         }
         return image;
